@@ -17,12 +17,15 @@ class Data{
         return age;
     }
     public Data(){
-        this("Sai",3);
+        this("Developer");
         System.out.println("empty constructor called");
     }
     public Data(String name , int age){
-        //this();
         System.out.println("Name is : "+name+" age is : "+age);
+    }
+    public Data(String occupation){
+        this("Sai",3);
+        System.out.println("Occupation is : "+occupation);
     }
 }
 

@@ -1,6 +1,8 @@
 package org.example.DataStructures;
 
 
+import java.util.List;
+
 public class ReversingtheArray {
     public static void main(String[] args) {
         int[] array = {2,11,5,10,7,8};
@@ -69,6 +71,18 @@ public class ReversingtheArray {
             jindex--;
         }
         return reversedArray;
+    }
+    //if the elements are given in the form of array then below is the implementation
+    private List<Integer> reverseArray(List<Integer> list){
+        int start = 0 , end = list.size()-1;
+        while (start<end){
+            Integer temp = list.get(start);
+            list.set(start,list.get(end));
+            list.set(end,list.get(temp));
+            start++;
+            end--;
+        }
+        return list;
     }
 
     private static void printArray(int[] array) {
