@@ -13,5 +13,11 @@ public class ImpExample {
             }
         }
         System.out.println(num);
+        String word = "saiteja";
+        System.out.println(word.charAt(0)+2);
+        System.out.println(word.charAt(1));
+        System.out.println(word.charAt(2));
+        System.out.println(word.charAt(3));
+        System.out.println(word.charAt(4));
     }
 }
