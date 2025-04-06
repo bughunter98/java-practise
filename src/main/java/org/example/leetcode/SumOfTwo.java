@@ -33,8 +33,8 @@ class Solution {
 
     public int[] twoSumSecondApproach(int[] nums, int target) {
         // nums = 4 , 5 , 6 , 7   target = 11
+        Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
-            Map<Integer, Integer> map = new HashMap<>();
 
             int complement = target - nums[i];
             if (map.containsKey(complement)) {

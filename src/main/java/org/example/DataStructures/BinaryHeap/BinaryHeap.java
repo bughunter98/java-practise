@@ -94,8 +94,8 @@ public class BinaryHeap {
                 swapElements(index,parentNode,true);
             }
         }
-        index = parentNode; // after swapping we need to move to that index to check with the new swapped nodes parent...
-        heapifyFromBottomToTop(index,heapType);
+        //index = parentNode; // after swapping we need to move to that index to check with the new swapped nodes parent...
+        heapifyFromBottomToTop(parentNode,heapType);
     }
 
     private void heapifyFromTopToBottom(int parentIndex , String heapType){
@@ -141,7 +141,7 @@ public class BinaryHeap {
             }
             else {
                 // which ever child is greater among the 2 childs we take that and we swap
-                swapChild = array[leftChildIndex]>array[rightChildIndex] ? leftChildIndex : rightChildIndex;
+                swapChild = array[leftChildIndex]<array[rightChildIndex] ? leftChildIndex : rightChildIndex;
                 if (array[parentIndex]>array[swapChild]){
                     swapElements(parentIndex,swapChild,false);
                 }
