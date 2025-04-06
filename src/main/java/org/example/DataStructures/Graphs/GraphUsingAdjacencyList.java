@@ -47,7 +47,7 @@ public class GraphUsingAdjacencyList {
         LinkedList<GraphNodeList> queue = new LinkedList<>();
         queue.add(node);
         while (!queue.isEmpty()){
-            GraphNodeList currentNode = queue.remove(0);
+            GraphNodeList currentNode = queue.remove();
             currentNode.isVisited=true;
             System.out.print(currentNode.name+" ");
             ArrayList<GraphNodeList> neighBours = currentNode.neighbours;
