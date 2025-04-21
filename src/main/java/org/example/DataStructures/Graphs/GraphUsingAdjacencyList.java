@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
 
+
+// if we know target is close use BFS
+// if we know target vertex is buried very deep , use DFS
+
 public class GraphUsingAdjacencyList {
     ArrayList<GraphNodeList> nodeList;
 
