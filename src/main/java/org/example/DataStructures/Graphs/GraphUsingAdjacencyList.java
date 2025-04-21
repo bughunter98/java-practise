@@ -2,11 +2,10 @@ package org.example.DataStructures.Graphs;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 
 public class GraphUsingAdjacencyList {
-    ArrayList<GraphNodeList> nodeList = new ArrayList<>();
+    ArrayList<GraphNodeList> nodeList;
 
     public GraphUsingAdjacencyList(ArrayList<GraphNodeList> nodeList){
         this.nodeList=nodeList;
