@@ -22,6 +22,12 @@ public class GraphUsingAdjacencyList {
         second.neighbours.add(first);
 
     }
+
+    public void addDirectedEdge(int firstIndex, int secondIndex){
+        GraphNodeList first = nodeList.get(firstIndex);
+        GraphNodeList second = nodeList.get(secondIndex);
+        first.neighbours.add(second);
+    }
     public String printAdjacencyList(){
         StringBuilder s = new StringBuilder();
         for (int i=0;i<nodeList.size();i++){
@@ -98,6 +104,27 @@ public class GraphUsingAdjacencyList {
         // BFS time complexity is O(V+E) . same goes with spacce complexity as well.
     }
 
+    void topologicalVisit(GraphNodeList node,Stack<GraphNodeList> stack){
+        for (GraphNodeList neighbour : node.neighbours){
+            if (!neighbour.isVisited){
+                topologicalVisit(neighbour,stack);
+            }
+        }
+        node.isVisited=true;
+        stack.push(node);
+    }
+
+    void topologicalSort(){
+        Stack<GraphNodeList> stack = new Stack<>();
+        for (GraphNodeList node : nodeList){
+            if (!node.isVisited){
+                topologicalVisit(node,stack);
+            }
+        }
+        while (!stack.isEmpty()){
+            System.out.print(stack.pop().name+" ");
+        }
+    }
     public static void main(String[] args) {
         ArrayList<GraphNodeList> nodeList = new ArrayList<>();
         nodeList.add(new GraphNodeList("A", 0));
@@ -106,6 +133,16 @@ public class GraphUsingAdjacencyList {
         nodeList.add(new GraphNodeList("D", 3));
         nodeList.add(new GraphNodeList("E", 4));
 
+        ArrayList<GraphNodeList> nodeList2 = new ArrayList<>();
+        nodeList2.add(new GraphNodeList("A", 0));
+        nodeList2.add(new GraphNodeList("B", 1));
+        nodeList2.add(new GraphNodeList("C", 2));
+        nodeList2.add(new GraphNodeList("D", 3));
+        nodeList2.add(new GraphNodeList("E", 4));
+        nodeList2.add(new GraphNodeList("F", 5));
+        nodeList2.add(new GraphNodeList("G", 6));
+        nodeList2.add(new GraphNodeList("H", 7));
+
         GraphUsingAdjacencyList graph = new GraphUsingAdjacencyList(nodeList);
         graph.addUnDirectedEdge(0, 1);
         graph.addUnDirectedEdge(0, 2);
@@ -113,6 +150,16 @@ public class GraphUsingAdjacencyList {
         graph.addUnDirectedEdge(2, 3);
         graph.addUnDirectedEdge(1, 4);
         graph.addUnDirectedEdge(3, 4);
+
+        GraphUsingAdjacencyList graph2 = new GraphUsingAdjacencyList(nodeList2);
+        graph2.addDirectedEdge(0,2);
+        graph2.addDirectedEdge(2,4);
+        graph2.addDirectedEdge(4,7);
+        graph2.addDirectedEdge(4,5);
+        graph2.addDirectedEdge(5,6);
+        graph2.addDirectedEdge(1,2);
+        graph2.addDirectedEdge(1,3);
+        graph2.addDirectedEdge(3,5);
 
         System.out.println(graph.printAdjacencyList());
         System.out.println("Breadth First Search ");
@@ -141,6 +188,10 @@ public class GraphUsingAdjacencyList {
         System.out.println();
         System.out.println("Depth First Search");
         graph1.dfs();
+
+        System.out.println();
+        System.out.println("Topological Sort");
+        graph2.topologicalSort();
 
     }
     private static ArrayList<GraphNodeList> getNodeList() {
