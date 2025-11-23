@@ -1,9 +1,6 @@
 package org.example.Streams;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -57,6 +54,39 @@ public class JavaStreamsPractise {
         // without stream we can loop and perform the logic
         // when ever number of elements come we need to use counting
         System.out.println(alphabetList.stream().collect(Collectors.groupingBy(Function.identity(),Collectors.counting())));
+
+        List<List<Integer>> intList = Arrays.asList(Arrays.asList(1,2),Arrays.asList(3,4),Arrays.asList(5,6));
+        System.out.println(intList);
+        System.out.println(intList.stream().flatMap(List::stream).toList());
+
+
+        // sort employees by salary descending
+        List<Employee> empList = Arrays.asList(new Employee(1,2000,"IT")
+                ,new Employee(3,1000,"IT"),new Employee(2,3000,"IT"),
+                new Employee(1,2000,"NONIT"));
+        System.out.println(empList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed()).toList());
+
+        //Convert List to Map safely handling duplicate keys
+        Map<Integer,Employee> resultMap = empList.stream().collect(
+                Collectors.toMap(Employee::getEmpId, Function.identity(), (e1, e2) -> e1));
+        // this is same as above but slight diff . in output this will take the most recently updated value for that key unlike
+        // above which takes the first value
+        Map<Integer,Employee> resultMap1 = empList.stream().collect(
+                Collectors.toMap(Employee::getEmpId, Function.identity(), (e1, e2) -> e2));
+        System.out.println(resultMap);
+        System.out.println(resultMap1);
+        // group employees by dept
+        Map<String, List<Employee>> grpByDept = empList.stream().collect(Collectors.groupingBy(Employee::getDepartment));
+        System.out.println(grpByDept);
+        // find average salary per department .
+
+       Map<String, Double> empAvgSalaryByDEpt = empList.stream().collect(Collectors.groupingBy(
+                Employee::getDepartment, Collectors.averagingInt(Employee::getEmpSalary)));
+        System.out.println(empAvgSalaryByDEpt);
+
+
+
+
 
 
 
