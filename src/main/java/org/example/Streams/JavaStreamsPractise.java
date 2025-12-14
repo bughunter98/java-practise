@@ -84,6 +84,26 @@ public class JavaStreamsPractise {
                 Employee::getDepartment, Collectors.averagingInt(Employee::getEmpSalary)));
         System.out.println(empAvgSalaryByDEpt);
 
+        // count employees per department
+        Map<String,Long> empPerDept = empList.stream().collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()));
+        System.out.println(empPerDept);
+
+        // highest paid employee in each department
+        /*Map<String, Optional<Employee>> highPaidEmp = empList.stream().collect(Collectors.groupingBy(Employee::getDepartment,
+                Collectors.maxBy(Comparator.comparing(Employee::getEmpSalary))));*/
+        // collectors.maxBy returns optional . so we need to extract that hence above is not useful so i am using below
+        // above gives response this way
+        // {NONIT=Optional[Employee{empId=1, empSalary=2000, department=NONIT}], IT=Optional[Employee{empId=2, empSalary=3000, department=IT}]}
+        Map<String, Employee> highPaidEmp = empList.stream().collect(Collectors.groupingBy(Employee::getDepartment,
+                Collectors.collectingAndThen(
+                        Collectors.maxBy(Comparator.comparing(Employee::getEmpSalary)),
+                        Optional::get // Extract the value before the Map is finished
+                )));
+        System.out.println(highPaidEmp);
+        //Partition employees by salary > threshold
+       Map<Boolean, List<Employee>> s = empList.stream().collect(Collectors.partitioningBy(emp -> emp.getEmpSalary() > 1500));
+        System.out.println(s);
+
 
 
 
