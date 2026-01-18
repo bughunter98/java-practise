@@ -52,9 +52,12 @@ public class Day1SecondLargestNumberinArray {
                 secondLargst=largst;
                 largst = arr[i];
             }
-            if (arr[i]<largst && arr[i]>secondLargst){
+            else if (arr[i]<largst && arr[i]>secondLargst){
                 secondLargst=arr[i];
             }
+        }
+        if (secondLargst == Integer.MIN_VALUE) {
+            secondLargst=-1;
         }
         System.out.println("2nd largest element using best approach "+secondLargst);
 

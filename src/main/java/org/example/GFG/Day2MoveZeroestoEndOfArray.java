@@ -40,6 +40,25 @@ public class Day2MoveZeroestoEndOfArray {
             System.out.print(j + " ");
         }
 
+        n(a);
 
+    }
+
+    private static void n(int[] arr){
+        int count = 0;
+        for (int i=0;i<arr.length;i++){
+            if (arr[i]!=0){
+                if (arr[i]!=arr[count]){
+                    int temp = arr[count];
+                    arr[count]=arr[i];
+                    arr[i]=temp;
+                }
+                count++;
+            }
+        }
+        System.out.println();
+        for (int i: arr){
+            System.out.print(i+" ");
+        }
     }
 }
