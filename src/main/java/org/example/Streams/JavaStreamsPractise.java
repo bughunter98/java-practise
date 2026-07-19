@@ -1,16 +1,20 @@
 package org.example.Streams;
 
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class JavaStreamsPractise {
     public static void main(String[] args) {
         List<Integer> employeeList = Arrays.asList(3000,5000,2000,4000,1000);
-        List<Employee> employeesList = Arrays.asList(new Employee(1,3000,"DEV"),
-                new Employee(2,5000,"HR"),new Employee(3,2000,"QA")
-                ,new Employee(4,4000,"DevOps"),new Employee(5,1000,"AI")
-        ,new Employee(6,1500,"QA"));
+        List<Employee> employeesList = Arrays.asList(new Employee(1,3000,"DEV","Hyderabad","teja"),
+                new Employee(2,5000,"HR","Hyderabad","sai"),new Employee(3,2000,"QA","Chennai","john")
+                ,new Employee(4,4000,"DevOps","Bangalore","venkat"),new Employee(5,1000,"AI","Pune","ajit")
+        ,new Employee(6,1500,"QA","Banglore","daksh"));
         //1. sort list of employees by salary desc
         System.out.println(employeeList.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList()));
         System.out.println(employeesList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed())
@@ -60,13 +64,13 @@ public class JavaStreamsPractise {
         System.out.println(intList.stream().flatMap(List::stream).toList());
 
 
-        // sort employees by salary descending
-        List<Employee> empList = Arrays.asList(new Employee(1,2000,"IT")
-                ,new Employee(3,1000,"IT"),new Employee(2,3000,"IT"),
-                new Employee(1,2000,"NONIT"));
+        //7) sort employees by salary descending
+        List<Employee> empList = Arrays.asList(new Employee(1,2000,"IT","Hyderabad","sai")
+                ,new Employee(3,1000,"IT","Banglore","teja"),new Employee(2,3000,"IT","Chennai","naveen"),
+                new Employee(1,2000,"NONIT","Allahabad","ajit"));
         System.out.println(empList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed()).toList());
 
-        //Convert List to Map safely handling duplicate keys
+        //8) Convert List to Map safely handling duplicate keys
         Map<Integer,Employee> resultMap = empList.stream().collect(
                 Collectors.toMap(Employee::getEmpId, Function.identity(), (e1, e2) -> e1));
         // this is same as above but slight diff . in output this will take the most recently updated value for that key unlike
@@ -78,17 +82,17 @@ public class JavaStreamsPractise {
         // group employees by dept
         Map<String, List<Employee>> grpByDept = empList.stream().collect(Collectors.groupingBy(Employee::getDepartment));
         System.out.println(grpByDept);
-        // find average salary per department .
 
+        //9) find average salary per department .
        Map<String, Double> empAvgSalaryByDEpt = empList.stream().collect(Collectors.groupingBy(
                 Employee::getDepartment, Collectors.averagingInt(Employee::getEmpSalary)));
         System.out.println(empAvgSalaryByDEpt);
 
-        // count employees per department
+        //10) count employees per department
         Map<String,Long> empPerDept = empList.stream().collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()));
         System.out.println(empPerDept);
 
-        // highest paid employee in each department
+        //11) highest paid employee in each department
         /*Map<String, Optional<Employee>> highPaidEmp = empList.stream().collect(Collectors.groupingBy(Employee::getDepartment,
                 Collectors.maxBy(Comparator.comparing(Employee::getEmpSalary))));*/
         // collectors.maxBy returns optional . so we need to extract that hence above is not useful so i am using below
@@ -104,16 +108,367 @@ public class JavaStreamsPractise {
        Map<Boolean, List<Employee>> s = empList.stream().collect(Collectors.partitioningBy(emp -> emp.getEmpSalary() > 1500));
         System.out.println(s);
 
+        // 12)find employees based on city and then sort them according to alphabet order.
+        // prints Allahabad=[Employee{empId=1name=ajit, empSalary=2000, department=NONIT, City=Allahabad}], Banglore=[Employee{empId=3name=teja, empSalary=1000, department=IT, City=Banglore}]
+        Map<String,List<Employee>> employeeGroupByCity = empList.stream().
+                sorted(Comparator.comparing(Employee::getName)).
+                collect(Collectors.groupingBy(Employee::getCity));
+
+        System.out.println(employeeGroupByCity);
+
+        // if we want an improvised version of it which gives output like  Allahabad=[Ajit]
+
+        // first approach
+         employeeGroupByCity.forEach((city,employees)->{
+             List<String> names = employees.stream().map(Employee::getName).toList();
+             System.out.println(city +" "+names);
+         });
+
+         // second approach  little tricky
+
+      Map<String,List<String>> x = empList.stream().
+                sorted(Comparator.comparing(Employee::getName)).
+                collect(Collectors.groupingBy(Employee::getCity, Collectors.mapping(Employee::getName, Collectors.toList())));
+
+        System.out.println(x);
+
+
+      // 13) find the occurances of names of employees and their frequencies
+
+      Map<String,Long> empFreq = employeesList.stream().collect(Collectors.groupingBy(
+              Employee::getName,Collectors.counting()));
+
+
+        System.out.println(empFreq);
+
+        // 14) You have a Map<String, Integer> with employee names and their performance scores.
+        // You need the top 3 performers in descending order of score. How will you achieve this? give me easy java code
+        // 1. Create the sample map
+        Map<String, Integer> employees = new HashMap<>();
+        employees.put("Alice", 85);
+        employees.put("Bob", 95);
+        employees.put("Charlie", 70);
+        employees.put("David", 98);
+        employees.put("Eve", 92);
+
+        // approach 1
+        List<Map.Entry<String,Integer>> emp = employees.entrySet().stream().sorted(
+                Map.Entry.<String,Integer>comparingByValue().reversed()).
+                limit(3).toList();
+
+        System.out.println(emp);
+
+        // approach 2
+        List<Map.Entry<String,Integer>> emp1 = new ArrayList<>(employees.entrySet());
+        // to compare in descending order
+        emp1.sort((a,b)->b.getValue().compareTo(a.getValue()));
+
+        List<Map.Entry<String, Integer>> emp1output = emp1.stream().limit(3).toList();
+
+        System.out.println(emp1output);
+
+
+        // 15) . Write a program to print only numbers from an alphanumeric char array using stream API
+
+        // first convert the char array to stream then check by using character.isDigit method and then print
+        char[] charArray = {'1','A','2','B','3','C','4','D','5'};
+        Character[] chaArray = {'1','A','2','B','3','C','4','D','5'};
+        // approach 1
+        // .chars() converts the String to Intstream
+        // Stiring.lines coverts to Stream<String> where as .chars() coverts to IntStream thats key diff.
+        new String(charArray).chars().filter(Character::isDigit).forEach(val-> System.out.print((char)val +" ,"));
+        System.out.println();
+        // approach 2
+        // use Arrays
+        Arrays.stream(chaArray).filter(Character::isDigit).forEach(System.out::println);
+
+        //16) Write a program to find the sum of the entire array using Java 8 streams.
+
+        int [] arr = {1,2,5,6,7,8,9};
+        int arrSum = Arrays.stream(arr).sum();
+        System.out.println(arrSum);
+
+        // 17)  Write a program to find even numbers from a list and multiply them by 2 using streams.
+        List<Integer> evenList  = Arrays.asList(1,2,4,6,5,3,7,9,4);
+        evenList.stream().filter(n->n%2==0).map(n->n*2).forEach(n->System.out.print(n+","));
+
+        // 18) . Write a program to find the occurrence of each word in a given string.
+        // approach 1
+        String word  = "saitejathota";
+        Map<Character,Integer> wordOccurance = new HashMap<>();
+
+         for(char c : word.toCharArray()){
+             if (!wordOccurance.containsKey(c)){
+                 wordOccurance.put(c,1);
+             }
+             else {
+                 wordOccurance.put(c,wordOccurance.get(c)+1);
+             }
+         }
+        System.out.println();
+        wordOccurance.forEach((k,v)->{
+            System.out.println("Alphabet : "+k+" "+"occurance : "+v);
+        });
+
+        // approach 2 (can check later)
+
+        //19) Write a program to find common elements from three ArrayLists.
+
+        List<Integer> list1 = Arrays.asList(1,5,10,20,40,80);
+        List<Integer> list2 = Arrays.asList(6,7,20,80,100,5);
+        List<Integer> list3 = Arrays.asList(3,4,20,15,30,70,80,5,10);
+
+
+        // approach 1 using hashset ..
+        // there is a method called retain all . that will keep only the common elements between two lists.
+
+        Set<Integer> hashSet =  new HashSet<>(list1);
+
+        hashSet.retainAll(list2);
+        hashSet.retainAll(list3);
+        System.out.println(hashSet);
+
+        // approach 2 using hashmap .
+        // clubbing all the lists into one
+        List<List<Integer>> combinedList  = Arrays.asList(list1,list2,list3);
+        Map<Integer,Integer> hashMap = new/* ConcurrentHashMap*/HashMap<>();
+        // since i am removing in loop it throws concurrentModificationException
+        // or simply use removeIF which doesn't need this iterator
+        for (List<Integer> intList1 : combinedList){
+            for (int num : intList1){
+                hashMap.put(num,hashMap.getOrDefault(num,0)+1);
+            }
+        }
+
+        hashMap.entrySet().removeIf(v->v.getValue()!=3);
+        /*for (Map.Entry<Integer,Integer> m : hashMap.entrySet()){
+            if (m.getValue()!=3){
+                hashMap.remove(m.getKey());
+            }
+        }*/
+
+        hashMap.forEach((k,v)-> System.out.println(k));
+
+        //20. Write a program to convert a string to integer without using any API.
+
+        String str  = "4567";
+
+        int ans = 0;
+        for(int i=0;i<str.length();i++){
+
+            // Step 4: Grab the single character at the current position 'i'
+            char c = str.charAt(i);
+
+            // Step 5: Convert the character to its real numeric value.
+            // In computer memory, characters have hidden number codes (ASCII).
+            // The character '0' has a code of 48, and '1' has a code of 49.
+            // By subtracting '0' (48), we get the actual math number.
+            // Example: '1' (49) minus '0' (48) equals the integer 1.
+            int singleDigit = c-'0';
+
+            // Step 6: Build the final number step-by-step.
+            // We multiply our current total by 10 to push it over by one decimal place.
+            // Then we add the new digit to the end.
+            // Example for "456":
+            // Loop 1: (0 * 10) + 4 = 4
+            // Loop 2: (4 * 10) + 5 = 45
+            // Loop 3: (45 * 10) + 6 = 456
+            ans  =  (ans*10)+singleDigit;
+        }
+
+        System.out.println( "String value after converting to int is :"+ans);
+
+        //21. Write a program to find the first occurrence of a character in a string.
+
+        String firstOccurance  = "abcaab";
+        char ss = 'b';
+        int index = 0;
+        for(int i=0;i<firstOccurance.length();i++){
+            if (ss == firstOccurance.charAt(i)){
+                index=i;
+                break;
+            }
+        }
+
+        System.out.println("First occurance of string ' "+ss+ " ' is at index :"+index);
+
+
+        //22. Write a program to find the missing number in an array.
+
+        int[] array = new int[]{1,2,5,4,6};
+        int n = array.length+1;
+        int sum = n*(n+1)/2;
+        int sum1 = 0;
+        for (int val : array){
+            sum1 = sum1+val;
+        }
+
+        int outp = sum-sum1;
+        System.out.println("Missing number is :"+outp);
+        // but if array starts with diff value then above wont work . use below
+
+        int[] array1 = new int[]{31,32,34,35,36};
+        int n1 = array1.length+1;
+        int sum2 = n1*(array1[0]+array1[array1.length-1])/2;
+        int sum3 = 0;
+        for (int val:array1){
+            sum3=sum3+val;
+        }
+        int outp1 = sum2-sum3;
+        System.out.println("Missing number is : "+outp1);
+
+
+        //23.  Write a program to find all possible combinations of the string "GOD"
+
+        String god  = "GOD";
+        // mostly this is probability .. where we used permutations and combinations .
+
+        List<String> results = new ArrayList<>();
+
+        generateCombination(god.toCharArray(),0,results);
+
+        //24 Write a program to check for valid parentheses.
 
 
 
+        String parenthesisValidator = "()[]{}";
+
+        // Approach 1 : use  custom stack using a primitive array
+        boolean isParenthesesValidApproach1 = parenthesesValidator(parenthesisValidator);
+        // Approach 2 : use  Stack approach
+        boolean isParenthesesValidApproach2 = parenthesesValidator1(parenthesisValidator);
 
 
+        System.out.println( " is parenthesis valid ? "+isParenthesesValidApproach1);
+        System.out.println( " is parenthesis valid ? "+isParenthesesValidApproach2);
 
 
+        //25 . Write a program to find duplicates in an ArrayList.
+        List<String> duplicates  =  new ArrayList<>(Arrays.asList("Apple","Banana","Apple","Orange","apple","grape","Banana"));
 
+        // approach 1 // using hashset.
+        findDuplicatesUsingHashset(duplicates);
 
+        // approach 2 : using java streams
 
+        findDuplicatesUsingJavaStreams(duplicates);
 
     }
+
+    private static void findDuplicatesUsingJavaStreams(List<String> duplicates) {
+        Set<String> seen = new HashSet<>();
+        List<String> dup = duplicates.stream().filter(x -> !seen.add(x)).distinct().toList();
+        System.out.println("Original List : "+duplicates);
+        System.out.println("Duplicate Elemetns :"+dup);
+    }
+
+    private static void findDuplicatesUsingHashset(List<String> duplicates) {
+        Set<String> uniqueElements = new HashSet<>();
+        Set<String> duplicateElements = new HashSet<>();
+
+        for (String s : duplicates){
+            if (!uniqueElements.add(s)){
+                duplicateElements.add(s);
+            }
+        }
+        System.out.println("Original List : "+duplicates);
+        System.out.println("Duplicate Elemetns :"+duplicateElements);
+    }
+
+    private static void generateCombination(char[] charArray, int currentIndex, List<String> results) {
+        // now we need to iterate
+
+        // BASE CASE: If we have reached the last character, a full combination is ready
+        // hence recursion should break.
+        if (currentIndex == charArray.length-1){
+            // Convert the character array back to a String and save it
+            results.add(new String(charArray));
+        }
+        //GOD
+        for (int i=currentIndex;i<charArray.length;i++){
+            // 1. SWAP: Put the character at index 'i' into our current active slot
+            swap(charArray,currentIndex,i);
+            // 2. RECURSE: Move to the next index slot (currentIndex + 1) and dig deeper
+            generateCombination(charArray,currentIndex+1,results);
+
+            swap(charArray,currentIndex,i);
+        }
+    }
+
+    // A helper method to switch the places of two characters in the array
+    private static void swap(char[] chars, int i, int j) {
+        char temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+    }
+
+    private static boolean parenthesesValidator1(String s) {
+        // If the string length is odd, it cannot be balanced
+        if (s == null || s.length() % 2 != 0) {
+            return false;
+        }
+        Stack<Character> stack = new Stack<>();
+        // Traverse each character in the string
+
+        for (char ch : s.toCharArray()){
+            if (ch == '(' || ch == '{' || ch == '[' ){
+                stack.push(ch);
+            } else if (ch == ')' || ch == '}' || ch == ']') {
+                 if (stack.isEmpty()){
+                     return false;
+                 }
+                 char top = stack.pop();
+                 if ((ch==')' && top!='(')||
+                         (ch=='}' && top!='{')||
+                         (ch==']' && top!='[')){
+                     return false;
+                 }
+
+            }
+        }
+        return stack.isEmpty();
+    }
+
+    private static boolean parenthesesValidator(String parenthesisValidator) {
+
+        // first we can check the length ..
+        // if its odd then straight away we can know that they can never be balanced.
+        if (parenthesisValidator.length()%2!=0){
+            return false;
+        }
+        char[] arr = new char[parenthesisValidator.length()];
+        int top = -1;
+
+        for (int i=0;i<arr.length;i++){
+            char ch = parenthesisValidator.charAt(i);
+            // Push opening brackets by incrementing the top pointer
+            if (ch == '(' || ch == '{' || ch == '['){
+                top++;
+                arr[top]=ch;
+            } else if (ch == ')' || ch == '}' || ch == ']') {
+                // If pointer is -1, stack is empty (no matching opening bracket)
+                if (top == -1) {
+                    return false;
+                }
+                // Fetch the top element and decrement the pointer (pop)
+                char lastOpen = arr[top];
+                top--;
+
+                // Check for mismatches
+                if ((ch == ')' && lastOpen != '(') ||
+                        (ch == '}' && lastOpen != '{') ||
+                        (ch == ']' && lastOpen != '[')) {
+                    return false;
+                }
+
+            }
+        }
+        return top ==-1;
+    }
+
+
+
+
+
+
 }
