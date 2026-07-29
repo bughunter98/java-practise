@@ -353,6 +353,134 @@ public class JavaStreamsPractise {
 
         findDuplicatesUsingJavaStreams(duplicates);
 
+        // 26. Write a program for the Quick Sort algorithm.
+
+        int[] quickSortArray = {10, 7, 8, 9, 1, 5};
+        int arrLenght = quickSortArray.length;
+        //quickSort(quickSortArray,0,arrLenght-1);
+
+        // 27. Write a program to check the minimum number of occurrences of a character in a string.
+        String testStr = "javaprogramming";
+        getMinOccurrence(testStr);
+
+        //28. Write a program where each index stores the product of all array elements except itself.
+
+        int [] nums =new int[] {1, 2, 3, 4};
+        // time complexity O(n2).
+        productOfAllArrayElementsExceptItself(nums);
+        //
+        productOfAllArrayElementsExceptItselfUsingStreams(nums);
+        productOfAllArrayElementsExceptItselfEffieicentApproach(nums);
+
+    }
+
+    private static void productOfAllArrayElementsExceptItselfUsingStreams(int[] nums) {
+        int [] answer = new int[nums.length];
+        for (int i=0;i<nums.length;i++){
+            final int p = i;
+            answer[i] = IntStream.range(0,nums.length).filter(k->k!=p)
+                    .map(j->nums[j])
+                    .reduce(1,(a,b)->a*b);
+
+        }
+        System.out.println("productOfAllArrayElementsExceptItselfUsingStreams");
+        for (int num : answer){
+            System.out.println(num);
+        }
+
+    }
+
+
+    private static void productOfAllArrayElementsExceptItselfEffieicentApproach(int[] nums) {
+        //array to store all left multiplication
+        int [] left =  new int[nums.length];
+        //array to store all rght multiplication
+        int [] right =  new int[nums.length];
+        int [] ans =  new int[nums.length];
+
+        left[0]  = 1;
+        for (int i = 1;i<nums.length;i++){
+            left[i] = left[i-1]*nums[i-1];
+        }
+
+        right[nums.length-1] = 1;
+        // nums.length-2 because we need to ignore first position
+        for (int i = nums.length-2;i>=0;i--){
+            right[i] = right[i+1]* nums[i+1];
+        }
+
+        for (int i=0;i<nums.length;i++){
+            ans[i] = left[i]*right[i];
+        }
+
+        System.out.println("productOfAllArrayElementsExceptItselfEffieicentApproach");
+        for (int i : ans){
+            System.out.print(i+" ");
+        }
+
+
+    }
+
+    private static void productOfAllArrayElementsExceptItself(int[] nums) {
+        int[] result  = new int[nums.length];
+        for (int i=0;i<nums.length;i++){
+            int product = 1;
+            for (int j=0;j<nums.length;j++){
+                int current  = nums[j];
+                if (i!=j){
+                    product = product*current;
+                }
+                result[i]=product;
+            }
+        }
+        System.out.println("productOfAllArrayElementsExceptItself");
+
+        for (int num : result){
+            System.out.println(num);
+        }
+
+    }
+
+    private static void getMinOccurrence(String str) {
+        if (str==null|| str.isEmpty()){
+            return;
+        }
+        Map<Character,Integer> frequencyMap = /*new HashMap<>();*/ /*using linked hashmap preserves the order*/ new LinkedHashMap<>();
+        for (char ch : str.toCharArray()){
+            if (ch != ' ') {
+                frequencyMap.put(ch, frequencyMap.getOrDefault(ch, 0) + 1);
+            }
+        }
+
+        int minValue  = Integer.MAX_VALUE;
+        char minChar = ' ';
+        for (char ch : frequencyMap.keySet()){
+            int count = frequencyMap.get(ch);
+            if (count<minValue){
+                minValue = count;
+                minChar = ch;
+            }
+        }
+        System.out.println("Character: '" + minChar + "' appears " + minValue + " time(s).");
+    }
+
+    private static void quickSort(int[] quickSortArray, int low, int high) {
+        // recursion condition should be there to break the loop
+        if (low<high){
+            // partition logic is the most crucial now...
+            int partition  = partition(quickSortArray,low,high);
+
+            // recursion calls for smaller elements
+            // and greater or equals elements
+            quickSort(quickSortArray,low,partition-1);
+            quickSort(quickSortArray,partition+1,high);
+        }
+    }
+
+    private static int partition(int[] quickSortArray, int low, int high) {
+        // last index is choosen as pivot .
+        int pivot  = quickSortArray[high];
+        return 1;
     }
 
     private static void findDuplicatesUsingJavaStreams(List<String> duplicates) {
