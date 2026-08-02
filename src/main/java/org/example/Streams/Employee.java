@@ -55,4 +55,8 @@ public class Employee {
     public Employee(){
 
     }
+    public Employee(String name, int empSalary) {
+        this.empSalary = empSalary;
+        this.name = name;
+    }
 }

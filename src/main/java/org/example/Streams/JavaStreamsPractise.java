@@ -394,6 +394,36 @@ public class JavaStreamsPractise {
         System.out.println("no of spikes in stock array :"+spikesCountBruteForce);
         System.out.println("no of spikes in stock array :"+spikesCountEfficient);
 
+        //32. Find the second highest salary of an employee using Java 8 streams.
+
+        List<Employee> employeesSalaryList = new ArrayList<>();
+        employeesSalaryList.add(new Employee("Sai",1000));
+        employeesSalaryList.add(new Employee("Teja",2000));
+        employeesSalaryList.add(new Employee("Naidu",500));
+        employeesSalaryList.add(new Employee("Reddy",3000));
+        employeesSalaryList.add(new Employee("Sunny",2500));
+        employeesSalaryList.add(new Employee("Bunny",5000));
+
+        findSecondHighestSalary(employeesSalaryList);
+        findNthHighestSalary(employeesSalaryList);
+
+    }
+
+    private static void findNthHighestSalary(List<Employee> employeesSalaryList) {
+    }
+
+    private static void findSecondHighestSalary(List<Employee> employeesSalaryList) {
+        // approach 1 --> using comparator
+        // While using .sorted() and .skip() is clean and highly readable, it is not performance-optimal for massive datasets or large values of N:
+        Optional<Integer> secondHighestSalApproach1 = employeesSalaryList.stream().
+                distinct().sorted(Comparator.comparingInt(Employee::getEmpSalary).reversed()).
+                map(Employee::getEmpSalary).skip(1).findFirst();
+        if (secondHighestSalApproach1.isPresent())
+            System.out.println("second highest salary using approch 1 is "+secondHighestSalApproach1.get());
+        else
+            System.out.println("second highest salary using approch 1 is "+null);
+
+        // approach 2 -->
 
     }
 
