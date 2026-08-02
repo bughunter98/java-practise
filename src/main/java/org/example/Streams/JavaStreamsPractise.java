@@ -368,10 +368,85 @@ public class JavaStreamsPractise {
         int [] nums =new int[] {1, 2, 3, 4};
         // time complexity O(n2).
         productOfAllArrayElementsExceptItself(nums);
-        //
         productOfAllArrayElementsExceptItselfUsingStreams(nums);
         productOfAllArrayElementsExceptItselfEffieicentApproach(nums);
+        //29. . How to count every character in a string using Java 8 streams?
+        System.out.println();
+        System.out.println("count every character in a string using Java 8 streams");
+        String strr = "SaiTeja";
 
+        Map<Character,Long> strr1 = strr.chars().mapToObj(val -> (char) val).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        Map<String,Long> strr2 = Arrays.stream(strr.split("")).collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+        System.out.println(strr1);
+        System.out.println(strr2);
+
+        //30 . . Write a program to check if a string has all unique characters.
+        // lets use above string only
+        checkStringIfIthasUniqueCharacters(strr);
+
+        //31 .  Write a program to find spikes in a stock price integer array.
+
+        System.out.println("spikes in a stock price integer array");
+        int [] stockPrices = {1,2,8,5,3,4};
+        int k = 2;
+        int spikesCountBruteForce  = findNoOfSpikesUsingBruteForce(stockPrices,k);
+        int spikesCountEfficient  = findNoOfSpikesUsingEfficientApproach(stockPrices,k);
+        System.out.println("no of spikes in stock array :"+spikesCountBruteForce);
+        System.out.println("no of spikes in stock array :"+spikesCountEfficient);
+
+
+    }
+
+    private static int findNoOfSpikesUsingEfficientApproach(int[] stockPrices, int k) {
+        // this is using a Prefix Suffix approach
+
+        return 0;
+    }
+
+    private static int findNoOfSpikesUsingBruteForce(int[] stockPrices,int k) {
+        int spikeCount = 0;
+        for (int i = 0;i<stockPrices.length;i++){
+            int leftCount  = 0;
+            int rightCount  = 0;
+
+            // 1. Manually check all elements to the left
+            for (int j=0;j<i;j++){
+                if (stockPrices[j]<stockPrices[i]){
+                    leftCount++;
+                }
+            }
+
+            // 2. Manually check all elements to the right
+            for (int j=i+1;j<stockPrices.length;j++){
+                if (stockPrices[j]<stockPrices[i]){
+                    rightCount++;
+                }
+            }
+            // 3. If it satisfies the K-spike rule, count it
+            if (leftCount>=k && rightCount>=k){
+                spikeCount++;
+            }
+
+        }
+        return spikeCount;
+    }
+
+    private static void checkStringIfIthasUniqueCharacters(String strr) {
+       char[] arr = strr.toCharArray();
+       Set<Character> set = new HashSet<>();
+       boolean isDuplicate = false;
+       // using for loop
+        for (char c : arr) {
+            if (!set.add(c)) {
+                isDuplicate = true;
+                break;
+            }
+        }
+        System.out.println("input string "+strr+" has duplicates : "+isDuplicate);
+
+        // using streams
+        boolean isUnique  = (strr.chars().distinct().count() == strr.length());
+        System.out.println("input string "+strr+" has all unique characters : "+isUnique);
     }
 
     private static void productOfAllArrayElementsExceptItselfUsingStreams(int[] nums) {
