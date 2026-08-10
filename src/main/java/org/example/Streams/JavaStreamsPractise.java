@@ -407,6 +407,77 @@ public class JavaStreamsPractise {
         findSecondHighestSalary(employeesSalaryList);
         findNthHighestSalary(employeesSalaryList);
 
+        // 33. Difference between map(), flatMap(), and filter() with example
+        // map() transforms each element individually,
+        // flatMap() transforms and flattens nested collections,
+        // filter() selects elements based on a condition
+        List<String> names = Arrays.asList("alice", "bob", "charlie");
+        System.out.println("Input List" + names);
+        System.out.println("Map Example :");
+        System.out.println(names.stream().map(d->d.toUpperCase()).toList());
+
+        System.out.println("FlatMap Example :");
+        List<List<String>> nestedFruits = Arrays.asList(
+                Arrays.asList("Apple", "Banana"),
+                Arrays.asList("Cherry", "Date")
+        );
+
+        System.out.println(" Flatmap input : "+nestedFruits);
+        System.out.println(" Flatmap output : "+   nestedFruits.stream().flatMap(List::stream).toList());
+        System.out.println(" Flatmap output with capitals : "+   nestedFruits.stream().flatMap(d->d.stream().map(String::toUpperCase)).toList());
+
+        // filter i need not add example we know many
+
+        //34. Write a program to partition numbers into even and odd using streams
+        System.out.println("program to partition numbers into even and odd using streams");
+        List<Integer> numberList = List.of(1,2,3,4,5,6,7,8,9,10);
+        //To partition numbers into even and odd using Java Streams, you should use the Collectors.partitioningBy()
+
+        // Partitions elements into a single map containing two lists
+        Map<Boolean,List<Integer>> partitiones = numberList.stream().collect(Collectors.partitioningBy(num -> num % 2 == 0));
+        System.out.println(partitiones);
+        // approach 2
+        System.out.println("Even list  : "+numberList.stream().filter(num->num%2==0).toList());
+        System.out.println("Odd list  : "+numberList.stream().filter(num->num%2!=0).toList());
+
+
+        //35.  Find the longest string in a list using Java 8 streams.
+        System.out.println("longest string in a list using Java 8 streams.");
+        List<String> lengthString = List.of("sai","teja","thota","hema","venkata","sai","sheela");
+        // we can actually sort and then get first element like below but time complexity will increase to O(NlogN)
+        //lengthString.stream().sorted(Comparator.comparing(String::length).reversed()).findFirst();
+        // we can use 2 approches now
+        //1
+        System.out.println("Approach 1:"+lengthString.stream().max(Comparator.comparingInt(String::length)).orElse(null));
+        System.out.println("Approach 2:"+lengthString.stream().max((str1,str2)->Integer.compare(str1.length(),str2.length())).orElse(null));
+
+        // 36.Convert a List to Map using Java 8 streams (handle duplicate keys)
+        //2. toMap(keyMapper, valueMapper, mergeFunction) --> merger function is to check duplicates and handle them .
+        // if we use 2 args only like t2. toMap(keyMapper, valueMapper) then in case there is dupliacte key java throws illegal state exception
+        System.out.println("Convert a List to Map using Java 8 streams (handle duplicate keys)");
+        System.out.println( lengthString.stream().collect(Collectors.toMap(
+                st->st.charAt(0), // key Mapper
+                /*Function.identity()*/st->st,// value mapper we can use any .
+                (existing,replacement)->existing // merger function to eliminate duplicates
+        )));
+        // but the above approach actually doesn't print second sai and sheela  because the merger function checks and eliminates suplicate keys right .
+        // since sai and sheela have duplicate , we are telling merger function to keep existing and ignore replacement , even if we do vice versa then sheela will be there
+        // and sai wont be there . so if we need all values then we need to use grouping by .
+
+        //Map<Character, List<String>>
+        System.out.println(lengthString.stream().collect(Collectors.groupingBy(st->st.charAt(0))));
+
+        //37  Write a program to find the top 3 highest paid employees
+        // this uses sorted which is O(nlogn)
+        System.out.println(" Write a program to find the top 3 highest paid employees");
+        System.out.println(employeesSalaryList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed()).limit(3).toList());
+
+        // group by dept
+        System.out.println("java stream code to group employee by dept and have 3 highest paid employees per dept in resp");
+        System.out.println(employeesList.stream().collect(Collectors.groupingBy(Employee::getDepartment,Collectors.collectingAndThen(
+                Collectors.toList(),
+                list->employeesList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed()).limit(3).toList()
+        ))));
     }
 
     private static void findNthHighestSalary(List<Employee> employeesSalaryList) {
@@ -424,6 +495,11 @@ public class JavaStreamsPractise {
             System.out.println("second highest salary using approch 1 is "+null);
 
         // approach 2 -->
+        Set<Integer> salarySet = new TreeSet<>(Comparator.reverseOrder());
+        for(Employee e : employeesSalaryList){
+            salarySet.add(e.getEmpSalary());
+        }
+        System.out.println("second highest salary using approch 2 is "+salarySet.stream().skip(1).findFirst().get());
 
     }
 
