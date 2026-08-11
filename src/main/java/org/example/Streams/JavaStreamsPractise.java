@@ -478,6 +478,14 @@ public class JavaStreamsPractise {
                 Collectors.toList(),
                 list->employeesList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed()).limit(3).toList()
         ))));
+
+        //38. Write a program to remove duplicate elements while preserving order using streams.
+
+        // to preserve order of insertion lnked list is best choice .
+        // so arraylist works in this case. Frequently look up items by index .
+        System.out.println("Write a program to remove duplicate elements while preserving order using streams.");
+        System.out.println(lengthString.stream().distinct().toList());
+
     }
 
     private static void findNthHighestSalary(List<Employee> employeesSalaryList) {
