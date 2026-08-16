@@ -31,10 +31,16 @@ public class JavaStreamsPractise {
         System.out.println("// 3. grouping by example");
         System.out.println(employeesList.stream().collect(Collectors.groupingBy(Employee::getDepartment)));
         // this will give the ascending order of depts that are grouped by length.
-        System.out.println("3a. this will give the ascending order of depts that are grouped by length.");
+        System.out.println("3a. this will give the  depts that are grouped by length.");
         System.out.println(employeesList.stream().map(Employee::getDepartment).collect(Collectors.groupingBy(String::length)));
+        // the above 3a will not actually sort because using a .map() will implement hashmap which doesn't guarantee the order if dataset is large . hence we need to
+        // use TreeMap
+        System.out.println("3b this will give the ascending order of depts that are grouped by length.");
+        Map<Integer, List<String>> data = employeesList.stream().map(Employee::getDepartment).collect(Collectors.groupingBy(String::length,
+                TreeMap::new,Collectors.toList()));
+        System.out.println(data);
         // for descending order
-        System.out.println("3b group by length descending order");
+        System.out.println("3c group by length descending order");
         System.out.println(employeesList.stream().map(Employee::getDepartment).collect(Collectors.groupingBy(String::length,
                 ()->new TreeMap<>(Comparator.reverseOrder()),
                 Collectors.toList())));
