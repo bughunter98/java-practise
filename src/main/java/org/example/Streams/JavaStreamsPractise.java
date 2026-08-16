@@ -1,13 +1,10 @@
 package org.example.Streams;
 
-import java.lang.reflect.Array;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
+// streams are lazy pipeline operations.
 public class JavaStreamsPractise {
     public static void main(String[] args) {
         List<Integer> employeeList = Arrays.asList(3000,5000,2000,4000,1000);
@@ -26,19 +23,24 @@ public class JavaStreamsPractise {
         // after overriding toString().”
         // ************************************************************************************************************
         // 2 . Sort employees by department then salary
+        System.out.println();
+        System.out.println("2 . Sort employees by department then salary");
         System.out.println(employeesList.stream().sorted(Comparator.comparing(Employee::getDepartment).thenComparing(Employee::getEmpSalary)).toList());
         // 3. grouping by example
+        System.out.println("// 3. grouping by example");
         System.out.println(employeesList.stream().collect(Collectors.groupingBy(Employee::getDepartment)));
         // this will give the ascending order of depts that are grouped by length.
+        System.out.println("3a. this will give the ascending order of depts that are grouped by length.");
         System.out.println(employeesList.stream().map(Employee::getDepartment).collect(Collectors.groupingBy(String::length)));
         // for descending order
+        System.out.println("3b group by length descending order");
         System.out.println(employeesList.stream().map(Employee::getDepartment).collect(Collectors.groupingBy(String::length,
                 ()->new TreeMap<>(Comparator.reverseOrder()),
                 Collectors.toList())));
-        // 4. Sum all salaries in department using groupingby
+        System.out.println( "4. Sum all salaries in department using groupingby");
         System.out.println(employeesList.stream().collect(Collectors.groupingBy(Employee::getDepartment,
                 Collectors.summingInt(Employee::getEmpSalary))));
-        // 5. Sum all numbers using reduce()
+        System.out.println("5. Sum all numbers using reduce()");
         // if we use reduce(Integer::sum) this returns an optional
         System.out.println(employeesList.stream().map(Employee::getEmpSalary).
                 reduce(Integer::sum).get());
@@ -53,7 +55,7 @@ public class JavaStreamsPractise {
         System.out.println(employeesList.stream().map(Employee::getEmpSalary).
                 reduce(0,Integer::sum));
 
-        // 6 . count occurances of each element in a list .
+        System.out.println("6 . count occurances of each element in a list .");
         List<String> alphabetList = Arrays.asList("a","b","a","c","a","b");
         // without stream we can loop and perform the logic
         // when ever number of elements come we need to use counting
@@ -65,12 +67,14 @@ public class JavaStreamsPractise {
 
 
         //7) sort employees by salary descending
+        System.out.println("7) sort employees by salary descending");
         List<Employee> empList = Arrays.asList(new Employee(1,2000,"IT","Hyderabad","sai")
                 ,new Employee(3,1000,"IT","Banglore","teja"),new Employee(2,3000,"IT","Chennai","naveen"),
                 new Employee(1,2000,"NONIT","Allahabad","ajit"));
         System.out.println(empList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed()).toList());
 
         //8) Convert List to Map safely handling duplicate keys
+        System.out.println("8) Convert List to Map safely handling duplicate keys");
         Map<Integer,Employee> resultMap = empList.stream().collect(
                 Collectors.toMap(Employee::getEmpId, Function.identity(), (e1, e2) -> e1));
         // this is same as above but slight diff . in output this will take the most recently updated value for that key unlike
@@ -84,15 +88,18 @@ public class JavaStreamsPractise {
         System.out.println(grpByDept);
 
         //9) find average salary per department .
+        System.out.println("9) find average salary per department .");
        Map<String, Double> empAvgSalaryByDEpt = empList.stream().collect(Collectors.groupingBy(
                 Employee::getDepartment, Collectors.averagingInt(Employee::getEmpSalary)));
         System.out.println(empAvgSalaryByDEpt);
 
         //10) count employees per department
+        System.out.println("10) count employees per department");
         Map<String,Long> empPerDept = empList.stream().collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()));
         System.out.println(empPerDept);
 
         //11) highest paid employee in each department
+        System.out.println("11) highest paid employee in each department");
         /*Map<String, Optional<Employee>> highPaidEmp = empList.stream().collect(Collectors.groupingBy(Employee::getDepartment,
                 Collectors.maxBy(Comparator.comparing(Employee::getEmpSalary))));*/
         // collectors.maxBy returns optional . so we need to extract that hence above is not useful so i am using below
@@ -109,6 +116,7 @@ public class JavaStreamsPractise {
         System.out.println(s);
 
         // 12)find employees based on city and then sort them according to alphabet order.
+        System.out.println("12)find employees based on city and then sort them according to alphabet order.");
         // prints Allahabad=[Employee{empId=1name=ajit, empSalary=2000, department=NONIT, City=Allahabad}], Banglore=[Employee{empId=3name=teja, empSalary=1000, department=IT, City=Banglore}]
         Map<String,List<Employee>> employeeGroupByCity = empList.stream().
                 sorted(Comparator.comparing(Employee::getName)).
@@ -135,6 +143,7 @@ public class JavaStreamsPractise {
 
       // 13) find the occurances of names of employees and their frequencies
 
+        System.out.println("13) find the occurances of names of employees and their frequencies");
       Map<String,Long> empFreq = employeesList.stream().collect(Collectors.groupingBy(
               Employee::getName,Collectors.counting()));
 
@@ -142,6 +151,7 @@ public class JavaStreamsPractise {
         System.out.println(empFreq);
 
         // 14) You have a Map<String, Integer> with employee names and their performance scores.
+        System.out.println(" 14) You have a Map<String, Integer> with employee names and their performance scores.");
         // You need the top 3 performers in descending order of score. How will you achieve this? give me easy java code
         // 1. Create the sample map
         Map<String, Integer> employees = new HashMap<>();
@@ -169,6 +179,7 @@ public class JavaStreamsPractise {
 
 
         // 15) . Write a program to print only numbers from an alphanumeric char array using stream API
+        System.out.println(" 15) . Write a program to print only numbers from an alphanumeric char array using stream API");
 
         // first convert the char array to stream then check by using character.isDigit method and then print
         char[] charArray = {'1','A','2','B','3','C','4','D','5'};
@@ -183,16 +194,19 @@ public class JavaStreamsPractise {
         Arrays.stream(chaArray).filter(Character::isDigit).forEach(System.out::println);
 
         //16) Write a program to find the sum of the entire array using Java 8 streams.
+        System.out.println("16) Write a program to find the sum of the entire array using Java 8 streams.");
 
         int [] arr = {1,2,5,6,7,8,9};
         int arrSum = Arrays.stream(arr).sum();
         System.out.println(arrSum);
 
         // 17)  Write a program to find even numbers from a list and multiply them by 2 using streams.
+        System.out.println("17)  Write a program to find even numbers from a list and multiply them by 2 using streams.");
         List<Integer> evenList  = Arrays.asList(1,2,4,6,5,3,7,9,4);
         evenList.stream().filter(n->n%2==0).map(n->n*2).forEach(n->System.out.print(n+","));
 
         // 18) . Write a program to find the occurrence of each word in a given string.
+        System.out.println("18) . Write a program to find the occurrence of each word in a given string. approach 1");
         // approach 1
         String word  = "saitejathota";
         Map<Character,Integer> wordOccurance = new HashMap<>();
@@ -210,9 +224,11 @@ public class JavaStreamsPractise {
             System.out.println("Alphabet : "+k+" "+"occurance : "+v);
         });
 
+        System.out.println("18) . Write a program to find the occurrence of each word in a given string. approach 2");
         // approach 2 (can check later)
 
         //19) Write a program to find common elements from three ArrayLists.
+        System.out.println("19) Write a program to find common elements from three ArrayLists. approach 1");
 
         List<Integer> list1 = Arrays.asList(1,5,10,20,40,80);
         List<Integer> list2 = Arrays.asList(6,7,20,80,100,5);
@@ -228,6 +244,7 @@ public class JavaStreamsPractise {
         hashSet.retainAll(list3);
         System.out.println(hashSet);
 
+        System.out.println("19) Write a program to find common elements from three ArrayLists. approacah 2");
         // approach 2 using hashmap .
         // clubbing all the lists into one
         List<List<Integer>> combinedList  = Arrays.asList(list1,list2,list3);
@@ -250,6 +267,7 @@ public class JavaStreamsPractise {
         hashMap.forEach((k,v)-> System.out.println(k));
 
         //20. Write a program to convert a string to integer without using any API.
+        System.out.println("20. Write a program to convert a string to integer without using any API.");
 
         String str  = "4567";
 
@@ -279,6 +297,7 @@ public class JavaStreamsPractise {
         System.out.println( "String value after converting to int is :"+ans);
 
         //21. Write a program to find the first occurrence of a character in a string.
+        System.out.println("21. Write a program to find the first occurrence of a character in a string.");
 
         String firstOccurance  = "abcaab";
         char ss = 'b';
@@ -295,6 +314,7 @@ public class JavaStreamsPractise {
 
         //22. Write a program to find the missing number in an array.
 
+        System.out.println("22. Write a program to find the missing number in an array.");
         int[] array = new int[]{1,2,5,4,6};
         int n = array.length+1;
         int sum = n*(n+1)/2;
@@ -319,6 +339,7 @@ public class JavaStreamsPractise {
 
 
         //23.  Write a program to find all possible combinations of the string "GOD"
+        System.out.println("23.  Write a program to find all possible combinations of the string \"GOD\"");
 
         String god  = "GOD";
         // mostly this is probability .. where we used permutations and combinations .
@@ -330,12 +351,14 @@ public class JavaStreamsPractise {
         //24 Write a program to check for valid parentheses.
 
 
+        System.out.println("24 Write a program to check for valid parentheses. apprpach 1");
 
         String parenthesisValidator = "()[]{}";
 
         // Approach 1 : use  custom stack using a primitive array
         boolean isParenthesesValidApproach1 = parenthesesValidator(parenthesisValidator);
         // Approach 2 : use  Stack approach
+        System.out.println("24 Write a program to check for valid parentheses. approach 2");
         boolean isParenthesesValidApproach2 = parenthesesValidator1(parenthesisValidator);
 
 
@@ -346,24 +369,29 @@ public class JavaStreamsPractise {
         //25 . Write a program to find duplicates in an ArrayList.
         List<String> duplicates  =  new ArrayList<>(Arrays.asList("Apple","Banana","Apple","Orange","apple","grape","Banana"));
 
+        System.out.println("25 . Write a program to find duplicates in an ArrayList. approach 1");
         // approach 1 // using hashset.
         findDuplicatesUsingHashset(duplicates);
 
+        System.out.println("25 . Write a program to find duplicates in an ArrayList. approach 2");
         // approach 2 : using java streams
 
         findDuplicatesUsingJavaStreams(duplicates);
 
         // 26. Write a program for the Quick Sort algorithm.
+        System.out.println("26. Write a program for the Quick Sort algorithm.");
 
         int[] quickSortArray = {10, 7, 8, 9, 1, 5};
         int arrLenght = quickSortArray.length;
         //quickSort(quickSortArray,0,arrLenght-1);
 
         // 27. Write a program to check the minimum number of occurrences of a character in a string.
+        System.out.println(" 27. Write a program to check the minimum number of occurrences of a character in a string.");
         String testStr = "javaprogramming";
         getMinOccurrence(testStr);
 
         //28. Write a program where each index stores the product of all array elements except itself.
+        System.out.println("28. Write a program where each index stores the product of all array elements except itself.");
 
         int [] nums =new int[] {1, 2, 3, 4};
         // time complexity O(n2).
@@ -371,6 +399,7 @@ public class JavaStreamsPractise {
         productOfAllArrayElementsExceptItselfUsingStreams(nums);
         productOfAllArrayElementsExceptItselfEffieicentApproach(nums);
         //29. . How to count every character in a string using Java 8 streams?
+        System.out.println("29. . How to count every character in a string using Java 8 streams?");
         System.out.println();
         System.out.println("count every character in a string using Java 8 streams");
         String strr = "SaiTeja";
@@ -381,10 +410,12 @@ public class JavaStreamsPractise {
         System.out.println(strr2);
 
         //30 . . Write a program to check if a string has all unique characters.
+        System.out.println("30 . . Write a program to check if a string has all unique characters.");
         // lets use above string only
         checkStringIfIthasUniqueCharacters(strr);
 
         //31 .  Write a program to find spikes in a stock price integer array.
+        System.out.println("31 .  Write a program to find spikes in a stock price integer array.");
 
         System.out.println("spikes in a stock price integer array");
         int [] stockPrices = {1,2,8,5,3,4};
@@ -395,6 +426,7 @@ public class JavaStreamsPractise {
         System.out.println("no of spikes in stock array :"+spikesCountEfficient);
 
         //32. Find the second highest salary of an employee using Java 8 streams.
+        System.out.println("32. Find the second highest salary of an employee using Java 8 streams.");
 
         List<Employee> employeesSalaryList = new ArrayList<>();
         employeesSalaryList.add(new Employee("Sai",1000));
@@ -405,9 +437,11 @@ public class JavaStreamsPractise {
         employeesSalaryList.add(new Employee("Bunny",5000));
 
         findSecondHighestSalary(employeesSalaryList);
-        findNthHighestSalary(employeesSalaryList);
+        int n2 =5;
+        findNthHighestSalary(employeesSalaryList,n2);
 
         // 33. Difference between map(), flatMap(), and filter() with example
+        System.out.println(" 33. Difference between map(), flatMap(), and filter() with example");
         // map() transforms each element individually,
         // flatMap() transforms and flattens nested collections,
         // filter() selects elements based on a condition
@@ -429,6 +463,7 @@ public class JavaStreamsPractise {
         // filter i need not add example we know many
 
         //34. Write a program to partition numbers into even and odd using streams
+        System.out.println("34. Write a program to partition numbers into even and odd using streams");
         System.out.println("program to partition numbers into even and odd using streams");
         List<Integer> numberList = List.of(1,2,3,4,5,6,7,8,9,10);
         //To partition numbers into even and odd using Java Streams, you should use the Collectors.partitioningBy()
@@ -442,6 +477,7 @@ public class JavaStreamsPractise {
 
 
         //35.  Find the longest string in a list using Java 8 streams.
+        System.out.println("35.  Find the longest string in a list using Java 8 streams.");
         System.out.println("longest string in a list using Java 8 streams.");
         List<String> lengthString = List.of("sai","teja","thota","hema","venkata","sai","sheela");
         // we can actually sort and then get first element like below but time complexity will increase to O(NlogN)
@@ -452,6 +488,7 @@ public class JavaStreamsPractise {
         System.out.println("Approach 2:"+lengthString.stream().max((str1,str2)->Integer.compare(str1.length(),str2.length())).orElse(null));
 
         // 36.Convert a List to Map using Java 8 streams (handle duplicate keys)
+        System.out.println("36.Convert a List to Map using Java 8 streams (handle duplicate keys)");
         //2. toMap(keyMapper, valueMapper, mergeFunction) --> merger function is to check duplicates and handle them .
         // if we use 2 args only like t2. toMap(keyMapper, valueMapper) then in case there is dupliacte key java throws illegal state exception
         System.out.println("Convert a List to Map using Java 8 streams (handle duplicate keys)");
@@ -468,6 +505,7 @@ public class JavaStreamsPractise {
         System.out.println(lengthString.stream().collect(Collectors.groupingBy(st->st.charAt(0))));
 
         //37  Write a program to find the top 3 highest paid employees
+        System.out.println("37  Write a program to find the top 3 highest paid employees");
         // this uses sorted which is O(nlogn)
         System.out.println(" Write a program to find the top 3 highest paid employees");
         System.out.println(employeesSalaryList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed()).limit(3).toList());
@@ -480,6 +518,7 @@ public class JavaStreamsPractise {
         ))));
 
         //38. Write a program to remove duplicate elements while preserving order using streams.
+        System.out.println("38. Write a program to remove duplicate elements while preserving order using streams.");
 
         // to preserve order of insertion lnked list is best choice .
         // so arraylist works in this case. Frequently look up items by index .
@@ -488,7 +527,52 @@ public class JavaStreamsPractise {
 
     }
 
-    private static void findNthHighestSalary(List<Employee> employeesSalaryList) {
+    private static void findNthHighestSalary(List<Employee> employeesSalaryList, int n2) {
+        //approach 1
+        Optional<Integer> nthHighstSalary = employeesSalaryList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed()).map(Employee::getEmpSalary).skip(n2-1).findFirst();
+        if (nthHighstSalary.isPresent())
+            System.out.println("nth highest salary using approch 1 is "+nthHighstSalary.get());
+        else
+            System.out.println("nth highest salary using approch 1 is "+null);
+
+        // approach 2 -->
+        Set<Integer> salarySet = new TreeSet<>(Comparator.reverseOrder());
+        for(Employee e : employeesSalaryList){
+            salarySet.add(e.getEmpSalary());
+        }
+        System.out.println("nth highest salary using approch 2 is "+salarySet.stream().skip(n2-1).findFirst().get());
+
+        // approach 3 . most imp and Time Complexity: \(O(M \log N)\) instead of \(O(M \log M)\). If N is small (like 3rd or 5th highest) and M is 1,000,000, \(\log N\) is virtually constant, making this approach run in near-linear O(M) time.
+        // using priorityQueue
+
+        if (n2 <= 0 || employeesSalaryList == null) {
+            System.out.println("Invalid input data or N");
+            return;
+        }
+        PriorityQueue<Integer> queue = new PriorityQueue<>(Collections.reverseOrder());
+        for (Employee e : employeesSalaryList){
+
+            if (!queue.contains(e.getEmpSalary())){
+                // PriorityQueue allows duplicate elements, so we use .contains()
+                // to ensure we only count unique salary ranks
+                queue.add(e.getEmpSalary());
+            }
+
+        }
+
+        // Check if we have enough unique salaries to find the Nth highest
+        if (queue.size()<n2){
+            System.out.println(n2 + "th highest salary not found (not enough unique salaries)");
+            return;
+        }
+        // Poll (remove) from the top N-1 times to clear higher salaries
+        for (int i = 0; i < n2 - 1; i++) {
+            queue.poll();
+        }
+
+        System.out.println("nth highest salary using approch 3 is "+queue.peek());
+
+
     }
 
     private static void findSecondHighestSalary(List<Employee> employeesSalaryList) {
@@ -513,6 +597,7 @@ public class JavaStreamsPractise {
 
     private static int findNoOfSpikesUsingEfficientApproach(int[] stockPrices, int k) {
         // this is using a Prefix Suffix approach
+
 
         return 0;
     }
