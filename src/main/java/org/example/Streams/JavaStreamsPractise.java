@@ -13,6 +13,7 @@ public class JavaStreamsPractise {
                 ,new Employee(4,4000,"DevOps","Bangalore","venkat"),new Employee(5,1000,"AI","Pune","ajit")
         ,new Employee(6,1500,"QA","Banglore","daksh"));
         //1. sort list of employees by salary desc
+        System.out.println("1. sort list of employees by salary desc");
         System.out.println(employeeList.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList()));
         System.out.println(employeesList.stream().sorted(Comparator.comparing(Employee::getEmpSalary).reversed())
                 .collect(Collectors.toList())); // “Java implicitly calls toString() whenever an object is used where a String is expected,
